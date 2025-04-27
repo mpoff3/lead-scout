@@ -93,7 +93,7 @@ reddit_research_task = Task(
 content_marketing_task = Task(
     description=f"Given the following Reddit post, draft a native, helpful comment that subtly promotes our project. Don't use any special formatting. Mention the project by name and url {project_url}.",
     agent=content_marketing_agent,
-    expected_output="A Reddit-native comment that subtly promotes the project.",
+    expected_output="URL of the Reddit post, and a Reddit-native comment that subtly promotes the project.",
 )
 
 crew = Crew(
@@ -104,9 +104,40 @@ crew = Crew(
 crew.kickoff()
 
 # Output final answers for each task
+output = None
 for task in crew.tasks:
     print(f"\n\nTASK: {task.description}")
     print(f"AGENT: {task.agent.role}")
     print(f"FINAL ANSWER:\n{task.output if hasattr(task, 'output') else 'No output available'}")
+    output = task.output
 
 adapter.close()
+
+# 
+
+task = "Post this comment to this Reddit post, use https://old.reddit.com UI instead of new UI:\n " + str(output)
+
+from langchain_google_genai import ChatGoogleGenerativeAI
+
+from browser_use import Agent, BrowserConfig, Browser
+import asyncio
+
+async def post_comment_to_reddit(task: str):
+    llm = ChatGoogleGenerativeAI(model='gemini-2.5-flash-preview-04-17', google_api_key=os.getenv("GEMINI_API_KEY"))
+
+    chrome_instance_path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    config = BrowserConfig(
+        chrome_instance_path=chrome_instance_path
+    )
+    browser = Browser(config=config)
+
+    agent = Agent(
+        task=task,
+        llm=llm,
+        browser=browser
+    )
+    result = await agent.run()
+    print(result)
+
+
+asyncio.run(post_comment_to_reddit(task))
