@@ -46,7 +46,7 @@ export default function Home() {
             LeadScout
           </h1>
           <p className="text-[16px] text-[#1A1A1B] flex items-center justify-center gap-2">
-            <span className="text-lg">🔍</span> Let's find some relevant Reddit posts that you can reply to
+            <span className="text-lg">🔍</span> Lets find some relevant Reddit posts that you can reply to
           </p>
         </div>
         
