@@ -75,8 +75,11 @@ content_marketing_agent = Agent(
     llm=llm,
 )
 
+# workaround for Sundai projects to make it more parsable:
+project_url_api = project_url.replace("sundai.club/projects/", "sundai.club/api/projects/")
+
 project_summary_task = Task(
-    description=f"Summarize the project at the URL '{project_url}' in a concise paragraph.",
+    description=f"Summarize the project at the URL '{project_url_api}' in a concise paragraph.",
     agent=project_summarizer_agent,
     expected_output="A concise summary of the project.",
 )
