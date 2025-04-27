@@ -4,12 +4,38 @@ import { useState } from 'react';
 
 export default function Home() {
   const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<{
+    project_summary: string | null;
+    marketing_analysis: string | null;
+    reddit_research: string | null;
+    content_marketing: string | null;
+  } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle the submission here
-    console.log('Submitted description:', description);
-    alert('Description submitted!');
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:8001/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: description }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze URL');
+      }
+
+      const data = await response.json();
+      setResults(data);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to analyze URL. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,24 +69,58 @@ export default function Home() {
                           transition-all duration-300 ease-in-out
                           bg-[#FFFFFF] hover:border-[#FF4500]/30
                           shadow-inner"
-                placeholder="Product description here..."
+                placeholder="Product url here..."
                 required
               />
             </div>
             
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-[#FF4500] text-white py-3 px-6 rounded-lg
                         hover:bg-[#FF4500]/90 active:bg-[#FF4500]
                         font-semibold text-[16px]
                         transition-all duration-300 ease-in-out
                         focus:outline-none focus:ring-2 focus:ring-[#FF4500]/50
-                        shadow-md hover:shadow-lg hover:transform hover:-translate-y-0.5"
+                        shadow-md hover:shadow-lg hover:transform hover:-translate-y-0.5
+                        disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Find Matching Reddit Posts
+              {loading ? 'Analyzing...' : 'Find Matching Reddit Posts'}
             </button>
           </form>
         </div>
+
+        {results && (
+          <div className="mt-8 space-y-6">
+            {results.project_summary && (
+              <div className="bg-white rounded-lg p-6 shadow-lg border border-[#FFE4D6]">
+                <h2 className="text-xl font-semibold text-[#1A1A1B] mb-3">Project Summary</h2>
+                <p className="text-[#1A1A1B]">{results.project_summary}</p>
+              </div>
+            )}
+            
+            {results.marketing_analysis && (
+              <div className="bg-white rounded-lg p-6 shadow-lg border border-[#FFE4D6]">
+                <h2 className="text-xl font-semibold text-[#1A1A1B] mb-3">Marketing Analysis</h2>
+                <p className="text-[#1A1A1B]">{results.marketing_analysis}</p>
+              </div>
+            )}
+            
+            {results.reddit_research && (
+              <div className="bg-white rounded-lg p-6 shadow-lg border border-[#FFE4D6]">
+                <h2 className="text-xl font-semibold text-[#1A1A1B] mb-3">Reddit Research</h2>
+                <p className="text-[#1A1A1B]">{results.reddit_research}</p>
+              </div>
+            )}
+            
+            {results.content_marketing && (
+              <div className="bg-white rounded-lg p-6 shadow-lg border border-[#FFE4D6]">
+                <h2 className="text-xl font-semibold text-[#1A1A1B] mb-3">Content Marketing</h2>
+                <p className="text-[#1A1A1B]">{results.content_marketing}</p>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="mt-6 text-center">
           <p className="text-[14px] text-[#666] leading-relaxed">
