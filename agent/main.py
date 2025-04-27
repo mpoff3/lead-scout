@@ -60,8 +60,8 @@ marketing_agent = Agent(
 )
 reddit_reseach_agent = Agent(
     role="Reddit Researcher",
-    goal="Find posts where we can promote the project",
-    backstory="You help find posts where we can promote the project",
+    goal="Find recent posts where we can promote the project",
+    backstory="You help find recent posts where we can promote the project",
     verbose=True,
     tools=tools,
     llm=llm,
@@ -86,11 +86,10 @@ marketing_task = Task(
     expected_output="The problem this project solves.",
 )
 reddit_research_task = Task(
-    description="Find 1 Reddit post where we can promote this project. Return the post's URL and its full text content.",
+    description="Find 1 recent Reddit post where we can promote this project. Return the post's URL and its full text content.",
     agent=reddit_reseach_agent,
     expected_output="A single Reddit post (URL and full text content) where we can promote this project.",
 )
-
 content_marketing_task = Task(
     description=f"Given the following Reddit post, draft a native, helpful comment that subtly promotes our project. Don't use any special formatting. Mention the project by name and url {project_url}.",
     agent=content_marketing_agent,
