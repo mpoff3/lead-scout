@@ -25,6 +25,8 @@ from mcpadapt.crewai_adapter import CrewAIAdapter
 # genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 llm = LLM(
     model=f"gemini/{os.getenv("GEMINI_MODEL")}",
+    # model=f"mistral/{os.getenv("MISTRAL_MODEL")}",
+    # api_key=os.getenv("MISTRAL_API_KEY"),
     temperature=0.3
 )
 
