@@ -2,6 +2,11 @@
 
 import { useState } from 'react';
 
+// Get the API URL based on environment
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://lead-scout-backend.onrender.com/api/analyze'
+  : 'http://localhost:8001/api/analyze';
+
 export default function Home() {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,7 +21,7 @@ export default function Home() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8001/api/analyze', {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

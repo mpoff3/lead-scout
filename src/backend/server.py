@@ -18,7 +18,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Local development
-        "https://lead-scout-frontend.onrender.com",
+        "https://lead-scout-frontend.onrender.com",  # Production frontend URL
+        "https://lead-scout-backend.onrender.com",  # Production backend URL
     ],
     allow_credentials=True,
     allow_methods=["*"],
