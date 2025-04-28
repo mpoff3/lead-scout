@@ -10,4 +10,5 @@ crewai-tools>=0.30.12
 reddit-mcp>=0.1.0
 mcpadapt[crewai]
 google-generativeai>=0.5.4
-browser-use 
+browser-use
+gunicorn>=21.2.0 
