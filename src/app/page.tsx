@@ -21,23 +21,34 @@ export default function Home() {
     e.preventDefault();
     setLoading(true);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minute timeout
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ url: description }),
+        signal: controller.signal
       });
 
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
-        throw new Error('Failed to analyze URL');
+        const errorData = await response.text();
+        throw new Error(errorData || 'Failed to analyze URL');
       }
 
       const data = await response.json();
       setResults(data);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error:', error);
-      alert('Failed to analyze URL. Please try again.');
+      if (error instanceof Error && error.name === 'AbortError') {
+        alert('Request timed out. The analysis is taking longer than expected. Please try again.');
+      } else {
+        alert('Failed to analyze URL. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
