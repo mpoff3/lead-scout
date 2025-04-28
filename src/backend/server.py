@@ -5,6 +5,7 @@ from typing import Optional
 from agent.agent_setup import setup_crew, post_comment_to_reddit
 import traceback
 import logging
+import os
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -15,11 +16,22 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Add your frontend URL
+    allow_origins=[
+        "http://localhost:3000",  # Local development
+        "https://lead-scout-frontend.onrender.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "LeadScout API is running"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
 class URLInput(BaseModel):
     url: str
