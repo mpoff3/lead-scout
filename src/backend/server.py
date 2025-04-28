@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-from agent_setup import setup_crew, post_comment_to_reddit
+from agent.agent_setup import setup_crew, post_comment_to_reddit
 import traceback
 import logging
 
